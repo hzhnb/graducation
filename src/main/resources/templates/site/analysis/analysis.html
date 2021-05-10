@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>排放量均值排名</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script src="${request.contextPath}/static/echarts-5.0.2/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/js/echarts_theme/vehicle_theme.js" type="text/javascript" charset="utf-8"></script>
+
+<div id="analysis" class="main">
+    <el-row>
+        <el-form :inline="true" :model="formSearch" size="mini" class="demo-form-inline search-form">
+            <el-form-item label="施工单位" prop="areaCode">
+                <eap-select datasource="sysDictionary" params="1379367288641765377" v-model="formSearch.areaCode"
+                            :multiple="false"></eap-select>
+            </el-form-item>
+            <el-form-item label="工人" prop="siteId">
+                <eap-select datasource="agencySite" params="" v-model="formSearch.siteId"
+                            :multiple="true" size="small"></eap-select>
+            </el-form-item>
+            <el-form-item style="float: right;">
+                <el-button type="primary" @click="onSearch">查询</el-button>
+                <el-button @click="showMoreSearch=!showMoreSearch">
+                    {{showMoreSearch?"收起":"展开"}}
+                </el-button>
+            </el-form-item>
+        </el-form>
+    </el-row>
+    <el-card class="box-card">
+        <el-card shadow="always" class="small-card">
+            <el-row :gutter="2">
+                <el-col :span="12">
+                    <div ref="myEchart1" style="height: 350px;width:100%"></div>
+                </el-col>
+                <el-col :span="12">
+                    <el-table class="list-table" size="small" height="350px" :data="tableData1" border style="width: 100%">
+                        <el-table-column label="序号" type="index" width="50" align="center" header-align="center">
+                        </el-table-column>
+                        <eap-table-column prop="sitename" label="日期">
+                        </eap-table-column>
+                        <eap-table-column prop="num" label="出勤人数">
+                        </eap-table-column>
+                        <eap-table-column prop="rate" label="出勤率(%)">
+                        </eap-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
+        </el-card>
+
+    </el-card>
+</div>
+<script>
+    var thisvue = new Vue({
+        el: '#analysis',
+        data: function () {
+            return {
+                loading: false,
+                showMoreSearch: false, //是否显示更多查询条件
+                formSearch: { //查询表单
+                    areaCode: "",
+                    siteId: "",
+                    fuelType: "",
+                },
+                //tableHeight : 0,
+                tableData1:[],
+                tableData2:[],
+                option: {
+                    title:{
+                        text:'',
+                        subtext: '吨/年'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: []
+                    },
+                    series: [
+                        {
+                            name: '年均排放量',
+                            type: 'bar',
+                            data: []
+                        },
+                    ]
+                },
+            }
+        },
+        mounted: function () {
+            this.onSearch();
+        },
+        methods: {
+            //查询按钮
+            onSearch: function () {
+                var myChart1 = echarts.init(this.$refs.myEchart1,"vehicle_theme");
+                var dataAxis = ['2021年5月4日', '2021年5月3日', '2021年5月2日', '2021年5月1日', '2021年4月30日', '2021年4月29日', '2021年4月28日'];
+                var data_0 = [930, 719, 678, 653, 638, 590, 511,480,432,320];
+                var data_1 = [21.1, 19.2, 17.5, 14.3, 10.5, 8.9, 7.5,6.4, 5.3, 5.2];
+                this.option.title.text = '出勤情况'
+                this.option.yAxis.data = dataAxis.reverse();
+                this.option.series[0].data = data_0.reverse();
+                myChart1.setOption(this.option);
+
+                var arrData1 = [];
+                dataAxis.reverse().forEach(function (value, index, array){
+                    var obj = {};
+                    obj.sitename = value;
+                    obj.num = data_0.reverse()[index];
+                    obj.rate = data_1[index];
+                    arrData1.push(obj);
+                });
+                this.tableData1 = arrData1;
+
+                var myChart2 = echarts.init(this.$refs.myEchart2,"vehicle_theme");
+                var dataAxis = ['EA211', 'K24W5', 'R18A1', 'L15A7', 'JL486Q5', 'EA888', 'EA111','GEMA','2ZE-FE','CTDI-Q3'];
+                var data_0 = [1930, 1219, 1078, 1053, 838, 590, 511,480,432,320];
+                var data_1 = [11.1, 9.2, 7.5, 4.3, 3.5, 2.9, 2.5,2.4, 1.3, 1.2];
+
+                this.option.title.text = '排放量均值排名前10的发动机型号'
+                this.option.yAxis.data = dataAxis.reverse();
+                this.option.series[0].data = data_0.reverse();
+                myChart2.setOption(this.option);
+
+                var arrData2 = [];
+                dataAxis.reverse().forEach(function (value, index, array){
+                    var obj = {};
+                    obj.sitename = value;
+                    obj.num = data_0.reverse()[index];
+                    obj.rate = data_1[index];
+                    arrData2.push(obj);
+                });
+                this.tableData2 = arrData2;
+            },
+        }
+    });
+
+
+</script>
+</body>
+</html>

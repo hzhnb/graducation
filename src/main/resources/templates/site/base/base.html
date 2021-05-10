@@ -1,0 +1,27 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<#--
+说明：所有业务项目前端页面公共引用文件
+echart等不常用框架的不引用
+登录页、首页等为了提高页面加载速度不引用公共样式，按需单独引用
+-->
+<#--公共引入部分版本控制-->
+<#assign version="1.00">
+<#--css部分-->
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/elementui.2.15.0.css" />
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/global.css" />
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/taiji-eap-ui-components.css" />
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/static/css/base.css" />
+<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+<#--js部分-->
+<script type="text/javascript">
+    var baseServerUrl = "${request.contextPath}";
+</script>
+<script src="${request.contextPath}/static/vue.2.6.12.js?v=${version}" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/elementui.2.15.0.js?v=${version}" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/axios.0.21.1.min.js?v=${version}" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/taiji-eap-ui-components.umd.min.js?v=${version}" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/jquery-2.1.4.min.js?v=${version}" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/IoUtil.js?v=${version}" type="text/javascript" charset="utf-8"></script>
+
+

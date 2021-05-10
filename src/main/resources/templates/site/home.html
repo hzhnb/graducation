@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="cn">
+<#include "/site/base/base.html">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<link rel="stylesheet" href="${request.contextPath}/static/css/home.css" type="text/css"/>
+<body>
+<div id="layout">
+    <el-container style="width: 100%;height: 100%">
+        <!--顶部-->
+        <el-header style="padding: 0;height: 50px">
+            <el-row style="width: 100%;background: #3A8CFF">
+                <el-col id="leftTitle" :span="4" >
+                    <el-row>
+                        <el-col :span="4">
+                            <el-image src="${request.contextPath}/static/img/logo.png" style="width: 45px; height: 45px;margin-top: 3px" fit="fill"></el-image>
+                        </el-col>
+                        <el-col :span="20">
+                            <div class="home_title">
+                                施工现场<br>人员信息管理系统
+                            </div>
+                        </el-col>
+                    </el-row>
+                    </el-menu>
+                </el-col>
+
+                <el-col :span="16" style="align-content: center">
+                    <el-menu style="padding-left: 40px"
+                             :default-active="0+''"
+                             mode="horizontal"
+                             background-color="#1762CC"
+                             text-color="#FFFFFF"
+                             active-text-color="#FFFFFF">
+                        <el-menu-item v-for="(item,index) in menus" :key="index" v-if="menus&&menus.length>0" :index="index+''" @click="clickMenu(item)">{{item.text}}</el-menu-item>
+                    </el-menu>
+                </el-col>
+
+                <el-col :span="4">
+                    <el-menu mode="horizontal" background-color="#1762CC"
+                             text-color="#FFFFFF"
+                             active-text-color="#FFFFFF">
+                        <el-submenu style="float:right" index="0">
+                            <template slot="title">系统管理员</template>
+                            <el-menu-item @click="updatePassword" index="0-1">修改密码</el-menu-item>
+                            <el-menu-item @click="logout" index="0-2">退出</el-menu-item>
+                        </el-submenu>
+                    </el-menu>
+                </el-col>
+            </el-row>
+        </el-header>
+        <!--主体-->
+        <el-container :style="{height: bodyHeight +'px'}">
+            <!-- 左侧菜单-->
+            <el-aside :style="{width: leftWidth+'px',background: '#FFFFFF'}">
+                <el-menu :unique-opened="true">
+                    <el-submenu v-for="(item,index) in submenus" :key="index" v-if="item.children&&item.children.length>0" :index="index+''" >
+                        <template slot="title">
+                            <i :class="item.icon?item.icon:'el-icon-location'"></i>
+                            <span slot="title">{{item.text}}</span>
+                        </template>
+
+                        <el-submenu v-for="(child,childIndex) in item.children" :key="childIndex" v-if="child.children&&child.children.length>0"
+                                    :index="index+'-'+childIndex">
+                            <template slot="title">
+                                <span slot="title">{{child.text}}</span>
+                            </template>
+
+                            <el-menu-item v-for="(grandchild,grandchildIndex) in child.children" :key="grandchildIndex"
+                                          :index="index+'-'+childIndex+'-'+grandchildIndex" @click="clickSubMenu(grandchild)">{{grandchild.text}}</el-menu-item>
+
+                        </el-submenu>
+
+                        <el-menu-item v-for="(child,childIndex) in item.children" :key="childIndex" v-if="!child.children||child.children.length==0"
+                                      :index="index+'-'+childIndex" @click="clickSubMenu(child)">{{child.text}}</el-menu-item>
+                    </el-submenu>
+                    <el-menu-item v-for="(item,index) in submenus" :key="index" v-if="!item.children||item.children.length==0" :index="index+''" @click="clickSubMenu(item)">
+                        <template slot="title">
+                            <i :class="item.icon?item.icon:'el-icon-location'"></i>
+                            <span slot="title">{{item.text}}</span>
+                        </template>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+
+            <el-main style="padding:0;">
+                <el-tabs v-model="selectedTab" type="border-card" @tab-remove="removeTab" @tab-click="tabClick" @contextmenu.prevent.native="openContextMenu($event)">
+                    <el-tab-pane
+                            v-for="(item, index) in tabs"
+                            :key="index"
+                            :label="item.title"
+                            :name="item.name"
+                            :closable="item.closable" >
+                        <!--iframe窗体-->
+                        <iframe id="iframe" :style="{height: iframeHeight +'px'}" class="home_iframe" :src='item.content' frameborder="0" scrolling="yes"></iframe>
+                    </el-tab-pane>
+                </el-tabs>
+            </el-main>
+        </el-container>
+    </el-container>
+
+    <ul v-show="contextMenuVisible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+        <li @click="refreshTabs">刷新</li>
+        <li @click="closeOtherTabs('left')">关闭左边</li>
+        <li @click="closeOtherTabs('right')">关闭右边</li>
+        <li @click="closeOtherTabs('other')">关闭其他</li>
+        <li @click="closeAllTabs">关闭所有</li>
+    </ul>
+</div>
+</body>
+<script type="text/javascript">
+    var homeVue = new Vue({
+        el: '#layout',
+        data: {
+            loading: false, //是否显示加载
+            selectedTab:'home',
+            tabs:[
+                {
+                    name:'home',
+                    title:'首页',
+                    content: baseServerUrl+'/v/site/home/index',
+                    closable:false
+                }
+            ],
+            bodyHeight:600,
+            iframeHeight:560,
+            leftWidth:210,
+            menus:[],
+            submenus:[],
+            contextMenuVisible:false,
+            left:0,
+            top:0,
+            contextMenuIndex:0
+        },
+        watch: {
+            contextMenuVisible(value) {
+                if (this.contextMenuVisible) {
+                    document.body.addEventListener("click", this.closeContextMenu);
+                } else {
+                    document.body.removeEventListener("click", this.closeContextMenu);
+                }
+            }
+        },
+        methods: {
+            getMenuList: function () {
+                axios.get(baseServerUrl + "/sys-resource/listMenuForSystem/1376152268583194626")
+                    .then(function (response) {
+                        if (response.data.code !== 0) {
+                            homeVue.$message(response.data.msg);
+                        } else {
+                            homeVue.menus = response.data.data;
+                            if(response.data.data&&response.data.data.length>0){
+                                homeVue.submenus = response.data.data[0].children;
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        homeVue.loading = false;
+                        homeVue.$message('加载异常');
+                    });
+            },
+            clickMenu:function(item){
+                this.submenus = item.children;
+            },
+            clickSubMenu:function(child){
+                if(child.children.length > 0){
+                    return;
+                }
+                var menuOpend = false;
+                var tabs = this.tabs;
+                for(var i=0;i<tabs.length;i++){
+                    if(tabs[i].name == child.text){
+                        homeVue.selectedTab = child.text;
+                        menuOpend = true;
+                    }
+                }
+                if(!menuOpend){
+                    this.addTabs(child);
+                }
+            },
+            addTabs:function(item){
+                var tab = {};
+                tab.name = item.nodeId;
+                tab.title = item.text;
+                tab.closable = true;
+                tab.content = baseServerUrl+"/v"+item.routeUrl;
+                var flag = true;
+                let tabs = this.tabs;
+                tabs.forEach(function(tab,index){
+                    if(tab.name == item.nodeId){
+                        flag = false;
+                    }
+                })
+                if(flag){
+                    this.tabs.push(tab);
+                }
+                this.selectedTab = item.nodeId;
+            },
+            tabClick:function(item){
+            },
+            removeTab:function(targetName){
+                let tabs = this.tabs;
+                let activeName = this.selectedTab;
+                if (activeName === targetName) {
+                    tabs.forEach(function(tab,index){
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.selectedTab = activeName;
+                this.tabs = tabs.filter(function(tab){return tab.name !== targetName});
+            },
+            openContextMenu:function(e) {
+                if (e.srcElement.id) {
+                    let currentContextTabId = e.srcElement.id.split("-")[1];
+                    for (let i = 0; i < this.tabs.length; i++) {
+                        if(currentContextTabId==this.tabs[i].name){
+                            this.contextMenuIndex = i;
+                            break;
+                        }
+                    }
+                    homeVue.contextMenuVisible = true;
+                    homeVue.left = e.clientX;
+                    homeVue.top = e.clientY + 10;
+                }
+            },
+            //刷新tabs标签
+            refreshTabs(){
+                document.getElementById('iframe').contentWindow.location.reload();
+            },
+            // 关闭所有标签页
+            closeAllTabs() {
+                homeVue.contextMenuVisible = false;
+                homeVue.tabs = homeVue.tabs.slice(0,1);
+                this.selectedTab = "home"
+            },
+            // 关闭其它标签页
+            closeOtherTabs(par) {
+                homeVue.contextMenuVisible = false;
+                this.selectedTab = homeVue.tabs[this.contextMenuIndex].name;
+                if (par == "left") {
+                    var tabs = [homeVue.tabs[0]];
+                    tabs = tabs.concat(homeVue.tabs.slice(this.contextMenuIndex,homeVue.tabs.length));
+                    homeVue.tabs = tabs;
+                }else if(par == "right"){
+                    homeVue.tabs = homeVue.tabs.slice(0,this.contextMenuIndex+1);
+                }if (par == "other") {
+                    var tabs = [homeVue.tabs[0],homeVue.tabs[this.contextMenuIndex]];
+                    homeVue.tabs = tabs;
+                }
+            },
+            // 关闭contextMenu
+            closeContextMenu() {
+                homeVue.contextMenuVisible = false;
+            },
+            updatePassword:function(){
+
+            },
+            logout: function(){
+                this.$confirm('正在退出系统, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    axios.get(baseServerUrl + "/logout")
+                        .then(function (response) {
+                            location.reload();
+                        })
+                        .catch(function (error) {
+                            homeVue.$message('退出异常');
+                        });
+
+
+                });
+            }
+        },
+        mounted: function() {
+            let _this = this
+            window.onresize= () => {
+                if (_this.resizeFlag) {
+                    clearTimeout(_this.resizeFlag)
+                }
+                _this.resizeFlag = setTimeout(() => {
+                    this.bodyHeight = window.innerHeight-50;
+                    this.iframeHeight = window.innerHeight-100;
+                    this.leftWidth = document.getElementById('leftTitle').offsetWidth;
+                    _this.resizeFlag = null
+                }, 100)
+            }
+            this.leftWidth = document.getElementById('leftTitle').offsetWidth;
+        },
+        created: function () {
+            this.bodyHeight = window.innerHeight-50;
+            this.iframeHeight = window.innerHeight-100;
+            this.getMenuList();
+        },
+        updated:function(){
+
+        }
+    });
+</script>
+<style>
+</style>
+</html>

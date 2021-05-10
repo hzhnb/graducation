@@ -1,0 +1,5 @@
+.main{
+    background: url(../../img/index_bg.png) no-repeat;
+    background-size:100% 100%;
+    background-attachment:fixed;
+}

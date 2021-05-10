@@ -1,0 +1,72 @@
+<div id="preview" v-show="show" class="main" v-cloak>
+    <div class="main-card" v-loading="loading">
+        <el-card class="box-card">
+            <el-page-header @back="onClose(false)" content="打印二维码">
+
+            </el-page-header>
+            <el-divider></el-divider>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <div id="qrcode" style="width:300px; height:300px; margin-top:15px;"></div>
+                </el-col>
+                <el-col :span="12">
+                    <el-button size="small" type="primary" @click="onSubmit">打印</el-button>
+                </el-col>
+
+            </el-row>
+        </el-card>
+    </div>
+</div>
+<script type="text/javascript">
+    var previewvue = new Vue({
+        el: '#preview',
+        data: {
+            data:{},
+            loading: false, //是否显示加载
+            show: false, //是够显示页面
+        },
+        watch: {},
+        methods: {
+            //显示
+            onShow: function (data) {
+                if (!data.id) {
+                    this.$message.info("未找到标识")
+                    this.onClose();
+                    return;
+                }
+                this.show = true;
+                this.loading = false;
+                var qrcode = new QRCode(document.getElementById("qrcode"), {
+                    width : 300,
+                    height : 300
+                });
+                qrcode.makeCode(data.id);
+            },
+            //关闭
+            onClose: function (refreshList) {
+                this.show = false;
+                this.loading = false;
+                listvue.onShow(refreshList);
+            }
+        },
+        mounted: function () {
+            let _this = this
+            window.onresize = () => {
+                if (_this.resizeFlag) {
+                    clearTimeout(_this.resizeFlag)
+                }
+                _this.resizeFlag = setTimeout(() => {
+
+                    _this.resizeFlag = null
+                }, 100)
+            }
+        },
+        created: function () {
+
+        },
+        updated: function () {
+
+        }
+    });
+</script>
+</html>

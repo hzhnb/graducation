@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="cn">
+<#include "/site/base/base.html">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页</title>
+</head>
+<link rel="stylesheet" href="${request.contextPath}/static/css/login.css" type="text/css"/>
+<body class="main">
+<div id="layout">
+    <el-row>
+        <el-col :span="12">
+            <el-row>
+                <el-col :span="16" :offset="5">
+                    <div id="login_slogan" :style="{marginTop: marginTop +'px'}" class="login_slogan">
+                    </div>
+                </el-col>
+            </el-row>
+        </el-col>
+        <el-col :span="12">
+            <el-row>
+                <el-col :span="18" :offset="4">
+                    <div :style="{marginTop: marginTop +'px'}" class="system_tetle">
+                        施工现场人员信息管理系统
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="12" :offset="6">
+                    <div class="login_form">
+                        <el-form ref="loginForm" :rules="rules" :model="form" label-width="50px">
+                            <el-form-item>
+                                <el-input placeholder="用户名" v-model="form.username" size="large"
+                                          prefix-icon="el-icon-user-solid"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-input placeholder="密码" v-model="form.password" show-password size="large"
+                                          prefix-icon="el-icon-lock"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-col :span="15">
+                                    <el-input placeholder="请输入验证码" v-model="form.captcha" size="large"></el-input>
+                                </el-col>
+                                <el-col :span="9">
+                                    <el-image style="width: 100%; height: 40px"
+                                              src="/captcha" onclick="this.src=this.src+'?'+Math.random()"
+                                              fit="fill"></el-image>
+                                </el-col>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button style="width: 100%" round type="primary" @click="onSubmit">登录</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-col>
+            </el-row>
+        </el-col>
+    </el-row>
+</div>
+</body>
+<script>
+    var loginVue = new Vue({
+        el: '#layout',
+        data: {
+            loading: false, //是否显示加载
+            form: {
+                username: "",
+                password: "",
+                captcha: ""
+            },
+            rules: {
+                username: [{
+                    required: true,
+                    message: '必填',
+                    trigger: 'blur'
+                }],
+                password: [{
+                    required: true,
+                    message: '必填',
+                    trigger: 'blur'
+                }],
+                captcha: [{
+                    required: true,
+                    message: '必填',
+                    trigger: 'blur'
+                }]
+            },
+            marginTop:250
+        },
+        methods: {
+            onSubmit: function () {
+                loginVue.loading = true;
+                const formData = new FormData()
+
+                formData.append('username', loginVue.form.username)
+                formData.append('password', loginVue.form.password)
+                formData.append('captcha', loginVue.form.captcha)
+                axios.post("/login", formData, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                }).then(function (response) {
+                    if (response.data.code !== 0) {
+                        loginVue.$message(response.data.msg);
+                    } else {
+                        loginVue.$refs['loginForm'].resetFields();
+                        loginVue.$message.success('登录成功');
+                        location.href = "/v/site/home";
+                    }
+                    loginVue.loading = false;
+                }).catch(function (error) {
+                    loginVue.$message.error('登录异常');
+                    loginVue.loading = false;
+                });
+            }
+        },
+        mounted: function() {
+            let _this = this
+            window.onresize= () => {
+                if (_this.resizeFlag) {
+                    clearTimeout(_this.resizeFlag)
+                }
+                _this.resizeFlag = setTimeout(() => {
+                    var sloganHeight = document.getElementById('login_slogan').offsetHeight;
+                    this.marginTop = (window.innerHeight-sloganHeight)/2;
+                    _this.resizeFlag = null
+                }, 100)
+            }
+        },
+        created: function () {
+            var sloganHeight = document.getElementById('login_slogan').offsetHeight;
+            this.marginTop = (window.innerHeight-sloganHeight)/2;
+
+            if(self!=top){
+                //不是顶层页面
+                this.$confirm('您的登陆已超时，请重新登陆！', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    top.location.href=baseServerUrl+"toLogin";
+                });
+            }
+        },
+        updated: function () {
+
+        }
+    });
+</script>
+</html>

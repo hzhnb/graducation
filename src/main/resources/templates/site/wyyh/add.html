@@ -1,0 +1,83 @@
+<div id="add" v-show="show" class="main" v-cloak>
+    <div class="main-card" v-loading="loading">
+        <el-card class="box-card">
+            <el-page-header @back="onClose(false)" content="新增">
+            </el-page-header>
+            <el-divider></el-divider>
+            <div>
+                <el-form class="add-form" ref="addform" :rules="rules" :model="form" label-width="150px" size="small">
+                    <el-form-item label="姓名" prop="name">
+                        <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="性别" prop="sex">
+                        <el-input v-model="form.sex" placeholder="请输入性别"></el-input>
+                    </el-form-item>
+                    <el-form-item label="年龄" prop="age">
+                        <el-input v-model="form.age" placeholder="请输入年龄"></el-input>
+                    </el-form-item>
+                    <el-form-item label="职业" prop="profession">
+                        <el-input v-model="form.profession" placeholder="请输入职业"></el-input>
+                    </el-form-item>
+                    <div class="add-button">
+                        <el-button size="small" type="primary" @click="onSubmit">保存</el-button>
+                        <el-button size="small" @click="onClose(false)">取消</el-button>
+                    </div>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
+</div>
+<script>
+    var addvue = new Vue({
+        el: '#add',
+        data: function () {
+            return {
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                form: globalvue.form,
+                rules: globalvue.rules,
+            }
+        },
+        mounted: function() {
+        },
+        methods: {
+            //显示
+            onShow: function (parentName,parentId) {
+                this.form.parentId = parentId;
+                this.parentName=parentName;
+                this.show = true;
+                this.loading = false;
+            },
+            //提交表单
+            onSubmit: function () {
+                this.$refs['addform'].validate(function (valid){
+                    if (valid) {
+                        addvue.loading = true;
+                        axios.post(globalvue.baseUrl, addvue.form).then(function (response) {
+                            if (response.data.code !== 0) {
+                                addvue.$message(response.data.msg);
+                            } else {
+                                addvue.$refs['addform'].resetFields();
+                                addvue.$message.success('新增成功');
+                                addvue.onClose(true);
+                            }
+                            addvue.loading = false;
+                        }).catch(function (error) {
+                            addvue.$message.error('新增异常');
+                            addvue.loading = false;
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            //关闭 是否刷新list
+            onClose: function (refreshList) {
+                this.show = false;
+                this.loading = false;
+                listvue.onShow(refreshList);
+            }
+        }
+    })
+</script>

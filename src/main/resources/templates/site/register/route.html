@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>siteRegister</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script>
+    var globalvue = new Vue({
+        data: function () {
+            return {
+                baseUrl: baseServerUrl + "/site-register/",
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                //表单数据
+                form: {
+                    workerId:"",
+                    registrant:"",
+                    registerTime:"",
+                    registerType:"",
+                    remark:"",
+                },
+                //表单校验规则 https://element.eleme.cn/2.15/#/zh-CN/component/form
+                rules: {
+                    workerId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    registrant: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    registerTime: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    registerType: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    remark: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                }
+            }
+        },
+    })
+</script>
+<#include "add.html">
+<#include "edit.html">
+<#include "list.html">
+</body>
+</html>

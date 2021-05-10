@@ -1,0 +1,111 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+
+  application:
+    name: site
+
+  resources:
+    static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/"]
+
+  freemarker:
+    cache: false
+    suffix: .html
+    request-context-attribute: request
+    template-loader-path: classpath:/templates/,classpath:/views/
+    prefer-file-system-access: false
+
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候会抛出异常,不启动则使用默认数据源.
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://47.104.215.184:3306/pansite?serverTimezone=UTC&Unicode=true&characterEncoding=UTF-8&useSSL=false
+          username: root
+          password: root@123
+          druid:
+            validation-query: select 1
+  redis:
+    database: ${REDIS_DATEBASE:9}
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:tj123456}
+    lettuce:
+      shutdown-timeout: 0
+      pool:
+        # 最大活跃连接
+        max-active: 8
+        # 最大阻塞时间
+        max-wait: -1
+        # 最大空闲连接
+        max-idle: 8
+        # 最小空闲连接
+        min-idle: 0
+      timeout: 10000
+  session:
+    store-type: redis #设置session存储类型为redis
+  #当遇到同样名字的时候，是否允许覆盖注册
+  main:
+    allow-bean-definition-overriding: true
+############# mybatis-plus配置 #############
+mybatis-plus:
+  mapper-locations: classpath*:**/dao/*.xml
+  global-config:
+    #开启驼峰转换
+    db-column-underline: true
+    db-config:
+      id-type: ASSIGN_ID
+      field-strategy: not_null
+    refresh: true
+############# 分页插件PageHelper配置 #############
+pagehelper:
+  auto-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  page-size-zero: true
+  params: count=countSql
+
+taiji:
+  eap:
+    paramter:
+      admin-username: "10c40d0046163106bf39fe40dadaef2b"
+      admin-psassword: "{bcrypt}$2a$10$8DH2A6vnWa4Dr5nuRyq4b.2OcyAXew22fK9vmJjLfuTyCOwoIObMG"
+      application-nikename: "用户管理平台"
+      user-default-pwd: "8888"
+    generator:
+      project:
+        modules:
+          - module-name: Site
+            package-path: com.taiji.site
+            view-path: templates
+            bean-module-name:
+            bean-package: com.taiji.site
+    file:
+      endpoint: http://47.104.194.63:9000
+      uploadEndpoint: http://47.104.194.63:9000
+      downloadEndpoint: http://47.104.194.63:9000
+      username: admin
+      password: admin123
+    doc:
+      title: 移动源监管系统接口文档
+      description: 172.0.0.1:8080
+      service-url: http://localhost:8080/site/toLogin
+      version: v1.0
+    ui:
+      static-url: /site
+    oauth:
+      client:
+        way: ${LOGIN_WAY:single}
+        #client-id: 1367360362785103874
+        #client-secret: 123456
+        #redirect-uri: http://localhost/login/oauth2
+        #authorization-uri: http://localhost:8081/oauth/authorize
+        #token-uri: http://localhost:8081/oauth/token
+        #jwk-set-uri: http://localhost:8081/.well-known/jwks.json
+        secret: site #JWT加解密使用的密钥
+        expiration: 604800 #JWT的超期限时间7天(60*60*24*7)
