@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>siteOnDuty</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script>
+    var globalvue = new Vue({
+        data: function () {
+            return {
+                baseUrl: baseServerUrl + "/site-on-duty/",
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                //表单数据
+                form: {
+                    time:"",
+                    mission:"",
+                    startTime:"",
+                    endTime:"",
+                    administratorId:"",
+                    villageId:"",
+                },
+                //表单校验规则 https://element.eleme.cn/2.15/#/zh-CN/component/form
+                rules: {
+                    time: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    mission: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    startTime: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    endTime: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    administratorId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    villageId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                }
+            }
+        },
+    })
+</script>
+<#include "add.html">
+<#include "edit.html">
+<#include "list.html">
+</body>
+</html>

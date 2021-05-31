@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>siteCommunity</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script>
+    var globalvue = new Vue({
+        data: function () {
+            return {
+                baseUrl: baseServerUrl + "/site-community/",
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                //表单数据
+                form: {
+                    name:"",
+                    address:"",
+                    province:"",
+                    market:"",
+                    county:"",
+                    longitude:"",
+                    latitude:"",
+                },
+                //表单校验规则 https://element.eleme.cn/2.15/#/zh-CN/component/form
+                rules: {
+                    name: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    address: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    province: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    market: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    county: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    longitude: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    latitude: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                }
+            }
+        },
+    })
+</script>
+<#include "add.html">
+<#include "edit.html">
+<#include "list1.html">
+</body>
+</html>

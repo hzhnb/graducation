@@ -1,0 +1,92 @@
+<div id="add" v-show="show" class="main" v-cloak>
+    <div class="main-card" v-loading="loading">
+        <el-card class="box-card">
+            <el-page-header @back="onClose(false)" content="新增">
+            </el-page-header>
+            <el-divider></el-divider>
+            <div>
+                <el-form class="add-form" ref="addform" :rules="rules" :model="form" label-width="150px" size="small">
+                    <el-form-item label="时间" prop="time">
+                        <el-date-picker v-model="form.time" type="date" placeholder="选择时间">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="任务" prop="mission">
+                        <el-input v-model="form.mission" placeholder="请输入任务"></el-input>
+                    </el-form-item>
+                    <el-form-item label="开始时间" prop="startTime">
+                        <el-date-picker v-model="form.startTime" type="datetime" placeholder="选择开始时间">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="结束时间" prop="endTime">
+                        <el-date-picker v-model="form.endTime" type="datetime" placeholder="选择结束时间">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="社区管理员id" prop="administratorId">
+                        <el-input v-model="form.administratorId" placeholder="请输入社区管理员id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="小区id" prop="villageId">
+                        <el-input v-model="form.villageId" placeholder="请输入小区id"></el-input>
+                    </el-form-item>
+                    <div class="add-button">
+                        <el-button size="small" type="primary" @click="onSubmit">保存</el-button>
+                        <el-button size="small" @click="onClose(false)">取消</el-button>
+                    </div>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
+</div>
+<script>
+    var addvue = new Vue({
+        el: '#add',
+        data: function () {
+            return {
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                form: globalvue.form,
+                rules: globalvue.rules,
+            }
+        },
+        mounted: function() {
+        },
+        methods: {
+            //显示
+            onShow: function (parentName,parentId) {
+                this.form.parentId = parentId;
+                this.parentName=parentName;
+                this.show = true;
+                this.loading = false;
+            },
+            //提交表单
+            onSubmit: function () {
+                this.$refs['addform'].validate(function (valid){
+                    if (valid) {
+                        addvue.loading = true;
+                        axios.post(globalvue.baseUrl, addvue.form).then(function (response) {
+                            if (response.data.code !== 0) {
+                                addvue.$message(response.data.msg);
+                            } else {
+                                addvue.$refs['addform'].resetFields();
+                                addvue.$message.success('新增成功');
+                                addvue.onClose(true);
+                            }
+                            addvue.loading = false;
+                        }).catch(function (error) {
+                            addvue.$message.error('新增异常');
+                            addvue.loading = false;
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            //关闭 是否刷新list
+            onClose: function (refreshList) {
+                this.show = false;
+                this.loading = false;
+                listvue.onShow(refreshList);
+            }
+        }
+    })
+</script>

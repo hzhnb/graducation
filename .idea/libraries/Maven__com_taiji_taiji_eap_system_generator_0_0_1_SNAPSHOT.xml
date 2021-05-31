@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.taiji:taiji-eap-system-generator:0.0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taiji/taiji-eap-system-generator/0.0.1-SNAPSHOT/taiji-eap-system-generator-0.0.1-20210526.081417-21.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taiji/taiji-eap-system-generator/0.0.1-SNAPSHOT/taiji-eap-system-generator-0.0.1-20210526.081417-21-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taiji/taiji-eap-system-generator/0.0.1-SNAPSHOT/taiji-eap-system-generator-0.0.1-20210526.081417-21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

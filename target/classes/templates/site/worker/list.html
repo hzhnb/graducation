@@ -1,0 +1,255 @@
+<div id="list" v-show="show" class="main" v-cloak>
+    <div class="main-card" v-loading="loading">
+        <el-card class="box-card">
+            <!--  查询开始 -->
+            <div>
+                <el-form :inline="true" :model="formSearch" size="mini" class="demo-form-inline search-form">
+                    <el-form-item label="施工单位名称">
+                        <el-input v-model="formSearch.unitName" placeholder="请输入施工单位名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="姓名">
+                        <el-input v-model="formSearch.fullName" placeholder="请输入姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="岗位">
+                        <el-input v-model="formSearch.job" placeholder="请输入岗位"></el-input>
+                    </el-form-item>
+                    <el-form-item label="进场日期" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.entryDate" placeholder="请输入进场日期"></el-input>
+                    </el-form-item>
+                    <el-form-item label="身份证号码" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.idCard" placeholder="请输入身份证号码"></el-input>
+                    </el-form-item>
+                    <el-form-item label="住址" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.address" placeholder="请输入住址"></el-input>
+                    </el-form-item>
+                    <el-form-item label="性别" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.gender" placeholder="请输入性别"></el-input>
+                    </el-form-item>
+                    <el-form-item label="出生日期" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.birthday" placeholder="请输入出生日期"></el-input>
+                    </el-form-item>
+                    <el-form-item label="血型" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.bloodType" placeholder="请输入血型"></el-input>
+                    </el-form-item>
+                    <el-form-item label="体检情况" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.examine" placeholder="请输入体检情况"></el-input>
+                    </el-form-item>
+                    <el-form-item label="持证情况" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.permit" placeholder="请输入持证情况"></el-input>
+                    </el-form-item>
+                    <el-form-item label="培训情况" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.train" placeholder="请输入培训情况"></el-input>
+                    </el-form-item>
+                    <el-form-item label="违章时间" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.violationDate" placeholder="请输入违章时间"></el-input>
+                    </el-form-item>
+                    <el-form-item label="违章描述" v-if="showMoreSearch">
+                        <el-input v-model="formSearch.violationCase" placeholder="请输入违章描述"></el-input>
+                    </el-form-item>
+                    <el-form-item style="float: right;">
+                        <el-button type="primary" @click="onSearch">查询</el-button>
+                        <el-button @click="showMoreSearch=!showMoreSearch">
+                            {{showMoreSearch?"收起":"展开"}}
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <!--  查询结束 -->
+            <!--      全局操作按钮开始      -->
+            <div style="margin-bottom: 20px">
+                <el-button size="mini" type="primary" @click="add" icon="el-icon-plus">新增</el-button>
+            </div>
+            <!--      全局操作按钮结束      -->
+            <!-- 根节点路径 -->
+            <!--  表格开始 -->
+            <el-table class="list-table" size="small" :height="tableHeight" :data="tableData" border style="width: 100%">
+                <eap-table-column prop="seq" label="序号">
+                </eap-table-column>
+                <eap-table-column prop="fullName" label="姓名">
+                </eap-table-column>
+                <eap-table-column prop="job" label="岗位">
+                </eap-table-column>
+                <eap-table-column width="200" prop="unitName" label="施工单位名称">
+                </eap-table-column>
+                <eap-table-column prop="entryDate" label="进场日期">
+                </eap-table-column>
+                <eap-table-column width="150" prop="idCard" label="身份证号码">
+                </eap-table-column>
+                <eap-table-column prop="address" label="住址">
+                </eap-table-column>
+                <eap-table-column prop="gender" label="性别">
+                </eap-table-column>
+                <eap-table-column prop="birthday" label="出生日期">
+                </eap-table-column>
+                <eap-table-column prop="bloodType" label="血型">
+                </eap-table-column>
+                <eap-table-column prop="examine" label="体检情况">
+                </eap-table-column>
+                <eap-table-column prop="permit" label="持证情况">
+                </eap-table-column>
+                <eap-table-column prop="train" label="培训情况">
+                </eap-table-column>
+                <eap-table-column prop="violationDate" label="违章时间">
+                </eap-table-column>
+                <eap-table-column prop="violationCase" label="违章描述">
+                </eap-table-column>
+                <el-table-column label="操作" width="200" fixed="right" align="center" header-align="center" class-name="table-operation">
+                    <template slot-scope="scope">
+                        <el-button-group>
+                            <el-button size="medium" icon="el-icon-printer" @click="printItem(scope.row)"></el-button>
+                            <el-button size="medium" icon="el-icon-edit" @click="editItem(scope.row)"></el-button>
+                            <el-button size="medium" icon="el-icon-delete" @click="deleteItem(scope.row)"></el-button>
+                        </el-button-group>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!-- 表格结束 -->
+            <!-- 分页开始 -->
+            <div style="text-align: center;margin-top: 10px;">
+                <el-pagination @size-change="sizeChange" @current-change="search" :page-sizes="[10, 20, 50, 100]"
+                               :page-size="pageInfo.pageSize" :current-page.sync="pageInfo.pageNum"
+                               :total="pageInfo.pageTotal"
+                               :hide-on-single-page="true"
+                               layout="total, sizes, prev, pager, next, jumper">
+                </el-pagination>
+            </div>
+            <!-- 分页结束 -->
+        </el-card>
+    </div>
+</div>
+<script type="text/javascript">
+    var listvue = new Vue({
+        el: '#list',
+        data: function () {
+            return {
+                loading: false,
+                show: true,
+                tableHeight : 0,
+                showMoreSearch: false, //是否显示更多查询条件
+                formSearch: { //查询表单
+                    seq:"",
+                    unitName:"",
+                    fullName:"",
+                    job:"",
+                    entryDate:"",
+                    idCard:"",
+                    address:"",
+                    gender:"",
+                    birthday:"",
+                    bloodType:"",
+                    examine:"",
+                    permit:"",
+                    train:"",
+                    violationDate:"",
+                    violationCase:"",
+                },
+                temp: {
+                    row: null
+                },
+                pageInfo: {//分页 信息
+                    pageTotal: 0, //总条数
+                    pageNum: 0, //第几页
+                    pageSize: 10, //每页条数
+                },
+                tableData: [],//表格数据
+            }
+        },
+        created(){
+            this.tableHeight = window.innerHeight-180;
+        },
+        updated: function () {
+
+        },
+        mounted: function() {
+            let _this = this
+            _this.onSearch();
+            window.onresize= () => {
+                if (_this.resizeFlag) {
+                    clearTimeout(_this.resizeFlag)
+                }
+                _this.resizeFlag = setTimeout(() => {
+                    _this.resizeFlag = null
+                }, 100)
+            }
+        },
+        methods: {
+            onShow: function (refresh) {
+                this.show = true;
+                if (refresh) {
+                    this.onSearch();
+                }
+            },
+            //新增
+            add: function () {
+                //隐藏list 显示添加页
+                this.show = false;
+                addvue.onShow();
+            },
+            printItem:function(row){
+                this.show = false;
+                previewvue.onShow(row);
+            },
+            //编辑
+            editItem: function (row) {
+                //隐藏list 显示修改页
+                this.show = false;
+                editvue.onShow(row);
+            },
+            //删除
+            deleteItem: function (row) {
+                this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    listvue.loading = true;
+                    axios.delete(globalvue.baseUrl + row.id, {}).then(function (response) {
+                        if (response.data.code !== 0) {
+                            listvue.$message(response.data.msg);
+                        }
+                        listvue.search();
+                    }).catch(function (error) {
+                        listvue.$message.error('删除异常');
+                        listvue.loading = false;
+                    });
+                });
+            },
+            //查询按钮
+            onSearch: function () {
+                this.pageInfo.pageNum = 1;
+                this.search();
+            },
+            sizeChange(pageSize){
+                this.pageInfo.pageSize = pageSize;
+                this.search();
+            },
+            //查询
+            search: function () {
+                this.loading = true;
+                var params = {};
+                for (let key in this.formSearch){
+                    if (!this.formSearch[key]) {
+                        continue;
+                    }
+                    params[key] = this.formSearch[key];
+                }
+                params.pageNum = this.pageInfo.pageNum;
+                params.pageSize = this.pageInfo.pageSize;
+                axios.get(globalvue.baseUrl,{
+                    params:params,
+                }).then(function (response) {
+                    if (response.data.code !== 0) {
+                        listvue.$message(response.data.msg);
+                    } else {
+                        listvue.tableData = response.data.data.list;
+                        listvue.pageInfo.pageTotal = response.data.data.total;
+                    }
+                    listvue.loading = false;
+                }).catch(function (error) {
+                    listvue.loading = false;
+                    listvue.$message('加载异常');
+                });
+            }
+        }
+    })
+</script>

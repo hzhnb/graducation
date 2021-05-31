@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.taiji.site.worker.dao.SiteWorkerMapper">
+    <resultMap id="BaseResultMap" type="com.taiji.site.worker.bean.SiteWorkerDO">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="seq" property="seq" jdbcType="INTEGER" />
+        <result column="unit_name" property="unitName" jdbcType="VARCHAR" />
+        <result column="full_name" property="fullName" jdbcType="VARCHAR" />
+        <result column="job" property="job" jdbcType="VARCHAR" />
+        <result column="entry_date" property="entryDate" jdbcType="TIMESTAMP" />
+        <result column="id_card" property="idCard" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="VARCHAR" />
+        <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+        <result column="blood_type" property="bloodType" jdbcType="VARCHAR" />
+        <result column="examine" property="examine" jdbcType="VARCHAR" />
+        <result column="permit" property="permit" jdbcType="VARCHAR" />
+        <result column="train" property="train" jdbcType="VARCHAR" />
+        <result column="violation_date" property="violationDate" jdbcType="TIMESTAMP" />
+        <result column="violation_case" property="violationCase" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="deleted" property="deleted" jdbcType="VARCHAR" />
+        <result column="version" property="version" jdbcType="INTEGER" />
+        <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BASE_COLUMN_LIST">
+        id,seq,unit_name,full_name,job,entry_date,id_card,address,gender,birthday,blood_type,examine,permit,train,violation_date,violation_case,create_time,create_by,update_time,update_by,deleted,version,org_id
+    </sql>
+
+    <sql id="condition">
+        <where>
+            1=1
+            <if test="id!=null and id!=''">
+                AND id = #{id,jdbcType=VARCHAR}
+            </if>
+            <if test="seq!=null and seq!=''">
+                AND seq = #{seq,jdbcType=INTEGER}
+            </if>
+            <if test="unitName!=null and unitName!=''">
+                AND unit_name = #{unitName,jdbcType=VARCHAR}
+            </if>
+            <if test="fullName!=null and fullName!=''">
+                AND full_name = #{fullName,jdbcType=VARCHAR}
+            </if>
+            <if test="job!=null and job!=''">
+                AND job = #{job,jdbcType=VARCHAR}
+            </if>
+            <if test="entryDate!=null and entryDate!=''">
+                AND entry_date = #{entryDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="idCard!=null and idCard!=''">
+                AND id_card = #{idCard,jdbcType=VARCHAR}
+            </if>
+            <if test="address!=null and address!=''">
+                AND address = #{address,jdbcType=VARCHAR}
+            </if>
+            <if test="gender!=null and gender!=''">
+                AND gender = #{gender,jdbcType=VARCHAR}
+            </if>
+            <if test="birthday!=null and birthday!=''">
+                AND birthday = #{birthday,jdbcType=TIMESTAMP}
+            </if>
+            <if test="bloodType!=null and bloodType!=''">
+                AND blood_type = #{bloodType,jdbcType=VARCHAR}
+            </if>
+            <if test="examine!=null and examine!=''">
+                AND examine = #{examine,jdbcType=VARCHAR}
+            </if>
+            <if test="permit!=null and permit!=''">
+                AND permit = #{permit,jdbcType=VARCHAR}
+            </if>
+            <if test="train!=null and train!=''">
+                AND train = #{train,jdbcType=VARCHAR}
+            </if>
+            <if test="violationDate!=null and violationDate!=''">
+                AND violation_date = #{violationDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="violationCase!=null and violationCase!=''">
+                AND violation_case = #{violationCase,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime!=null and createTime!=''">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy!=null and createBy!=''">
+                AND create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy!=null and updateBy!=''">
+                AND update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="deleted!=null and deleted!=''">
+                AND deleted = #{deleted,jdbcType=VARCHAR}
+            </if>
+            <if test="version!=null and version!=''">
+                AND version = #{version,jdbcType=INTEGER}
+            </if>
+            <if test="orgId!=null and orgId!=''">
+                AND org_id = #{orgId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO t_site_worker(
+        id,seq,unit_name,full_name,job,entry_date,id_card,address,gender,birthday,blood_type,examine,permit,train,violation_date,violation_case,create_time,create_by,update_time,update_by,deleted,version,org_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.id,jdbcType=VARCHAR},#{item.seq,jdbcType=INTEGER},#{item.unitName,jdbcType=VARCHAR},#{item.fullName,jdbcType=VARCHAR},#{item.job,jdbcType=VARCHAR},#{item.entryDate,jdbcType=TIMESTAMP},#{item.idCard,jdbcType=VARCHAR},#{item.address,jdbcType=VARCHAR},#{item.gender,jdbcType=VARCHAR},#{item.birthday,jdbcType=TIMESTAMP},#{item.bloodType,jdbcType=VARCHAR},#{item.examine,jdbcType=VARCHAR},#{item.permit,jdbcType=VARCHAR},#{item.train,jdbcType=VARCHAR},#{item.violationDate,jdbcType=TIMESTAMP},#{item.violationCase,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.deleted,jdbcType=VARCHAR},#{item.version,jdbcType=INTEGER},#{item.orgId,jdbcType=VARCHAR}
+        )
+        </foreach>
+    </insert>
+
+</mapper>

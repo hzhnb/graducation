@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.taiji.site.residentUser.dao.SiteResidentMapper">
+    <resultMap id="BaseResultMap" type="com.taiji.site.residentUser.bean.SiteResidentDO">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="VARCHAR" />
+        <result column="idcare" property="idcare" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="birth" property="birth" jdbcType="TIMESTAMP" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="community_id" property="communityId" jdbcType="VARCHAR" />
+        <result column="village_id" property="villageId" jdbcType="VARCHAR" />
+        <result column="building_id" property="buildingId" jdbcType="VARCHAR" />
+        <result column="room_number" property="roomNumber" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="deleted" property="deleted" jdbcType="VARCHAR" />
+        <result column="version" property="version" jdbcType="INTEGER" />
+        <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BASE_COLUMN_LIST">
+        id,email,address,gender,idcare,phone,birth,user_id,community_id,village_id,building_id,room_number,create_time,create_by,update_time,update_by,deleted,version,org_id
+    </sql>
+
+    <sql id="condition">
+        <where>
+            1=1
+            <if test="id!=null and id!=''">
+                AND id = #{id,jdbcType=VARCHAR}
+            </if>
+            <if test="email!=null and email!=''">
+                AND email = #{email,jdbcType=VARCHAR}
+            </if>
+            <if test="address!=null and address!=''">
+                AND address = #{address,jdbcType=VARCHAR}
+            </if>
+            <if test="gender!=null and gender!=''">
+                AND gender = #{gender,jdbcType=VARCHAR}
+            </if>
+            <if test="idcare!=null and idcare!=''">
+                AND idcare = #{idcare,jdbcType=VARCHAR}
+            </if>
+            <if test="phone!=null and phone!=''">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="birth!=null and birth!=''">
+                AND birth = #{birth,jdbcType=TIMESTAMP}
+            </if>
+            <if test="userId!=null and userId!=''">
+                AND user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="communityId!=null and communityId!=''">
+                AND community_id = #{communityId,jdbcType=VARCHAR}
+            </if>
+            <if test="villageId!=null and villageId!=''">
+                AND village_id = #{villageId,jdbcType=VARCHAR}
+            </if>
+            <if test="buildingId!=null and buildingId!=''">
+                AND building_id = #{buildingId,jdbcType=VARCHAR}
+            </if>
+            <if test="roomNumber!=null and roomNumber!=''">
+                AND room_number = #{roomNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime!=null and createTime!=''">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy!=null and createBy!=''">
+                AND create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy!=null and updateBy!=''">
+                AND update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="deleted!=null and deleted!=''">
+                AND deleted = #{deleted,jdbcType=VARCHAR}
+            </if>
+            <if test="version!=null and version!=''">
+                AND version = #{version,jdbcType=INTEGER}
+            </if>
+            <if test="orgId!=null and orgId!=''">
+                AND org_id = #{orgId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO t_site_resident(
+        id,email,address,gender,idcare,phone,birth,user_id,community_id,village_id,building_id,room_number,create_time,create_by,update_time,update_by,deleted,version,org_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.id,jdbcType=VARCHAR},#{item.email,jdbcType=VARCHAR},#{item.address,jdbcType=VARCHAR},#{item.gender,jdbcType=VARCHAR},#{item.idcare,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.birth,jdbcType=TIMESTAMP},#{item.userId,jdbcType=VARCHAR},#{item.communityId,jdbcType=VARCHAR},#{item.villageId,jdbcType=VARCHAR},#{item.buildingId,jdbcType=VARCHAR},#{item.roomNumber,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.deleted,jdbcType=VARCHAR},#{item.version,jdbcType=INTEGER},#{item.orgId,jdbcType=VARCHAR}
+        )
+        </foreach>
+    </insert>
+
+</mapper>

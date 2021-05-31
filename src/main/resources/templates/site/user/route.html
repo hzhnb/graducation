@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>siteUser</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script>
+    var globalvue = new Vue({
+        data: function () {
+            return {
+                baseUrl: baseServerUrl + "/site-user/",
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                //表单数据
+                form: {
+                    name:"",
+                    createdTime:"",
+                    createdBy:"",
+                    updatedTime:"",
+                    updatedBy:"",
+                },
+                //表单校验规则 https://element.eleme.cn/2.15/#/zh-CN/component/form
+                rules: {
+                    name: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    createdTime: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    createdBy: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    updatedTime: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    updatedBy: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                }
+            }
+        },
+    })
+</script>
+<#include "add.html">
+<#include "edit.html">
+<#include "list.html">
+</body>
+</html>

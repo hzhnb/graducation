@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>siteBuilding</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script>
+    var globalvue = new Vue({
+        data: function () {
+            return {
+                baseUrl: baseServerUrl + "/site-building/",
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                //表单数据
+                form: {
+                    number:"",
+                    floor:"",
+                    householdsNumber:"",
+                    villageId:"",
+                },
+                //表单校验规则 https://element.eleme.cn/2.15/#/zh-CN/component/form
+                rules: {
+                    number: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    floor: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    householdsNumber: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    villageId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                }
+            }
+        },
+    })
+</script>
+<#include "add.html">
+<#include "edit.html">
+<#include "list1.html">
+</body>
+</html>

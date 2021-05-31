@@ -1,0 +1,175 @@
+<div id="list" v-show="show" class="main" v-cloak>
+    <div class="main-card" v-loading="loading">
+        <el-card class="box-card">
+            <!--  查询开始 -->
+            <div>
+                <el-form :inline="true" :model="formSearch" size="mini" class="demo-form-inline search-form">
+                    <el-form-item label="楼号">
+                        <el-input v-model="formSearch.number" placeholder="请输入楼号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="楼层数">
+                        <el-input v-model="formSearch.floor" placeholder="请输入楼层数"></el-input>
+                    </el-form-item>
+                    <el-form-item label="户数">
+                        <el-input v-model="formSearch.householdsNumber" placeholder="请输入户数"></el-input>
+                    </el-form-item>
+                    <el-form-item label="小区id">
+                        <el-input v-model="formSearch.villageId" placeholder="请输入小区id"></el-input>
+                    </el-form-item>
+                    <el-form-item style="float: right;">
+                        <el-button type="primary" @click="onSearch">查询</el-button>
+                        <el-button @click="showMoreSearch=!showMoreSearch">
+                            {{showMoreSearch?"收起":"展开"}}
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <!--  查询结束 -->
+            <!--      全局操作按钮开始      -->
+            <!--      全局操作按钮结束      -->
+            <!-- 根节点路径 -->
+            <!--  表格开始 -->
+            <el-table class="list-table" size="small" :height="tableHeight" :data="tableData" border style="width: 100%">
+                <el-table-column label="序号" type="index" width="50" align="center" header-align="center">
+                </el-table-column>
+                <eap-table-column prop="number" label="楼号">
+                </eap-table-column>
+                <eap-table-column prop="floor" label="楼层数">
+                </eap-table-column>
+                <eap-table-column prop="householdsNumber" label="户数">
+                </eap-table-column>
+                <eap-table-column prop="villageId" label="小区id">
+                </eap-table-column>
+            </el-table>
+            <!-- 表格结束 -->
+            <!-- 分页开始 -->
+            <div style="text-align: center;margin-top: 10px;">
+                <el-pagination @size-change="sizeChange" @current-change="search" :page-sizes="[10, 20, 50, 100]"
+                               :page-size="pageInfo.pageSize" :current-page.sync="pageInfo.pageNum"
+                               :total="pageInfo.pageTotal"
+                               :hide-on-single-page="true"
+                               layout="total, sizes, prev, pager, next, jumper">
+                </el-pagination>
+            </div>
+            <!-- 分页结束 -->
+        </el-card>
+    </div>
+</div>
+<script type="text/javascript">
+    var listvue = new Vue({
+        el: '#list',
+        data: function () {
+            return {
+                loading: false,
+                show: true,
+                tableHeight : 0,
+                showMoreSearch: false, //是否显示更多查询条件
+                formSearch: { //查询表单
+                    number:"",
+                    floor:"",
+                    householdsNumber:"",
+                    villageId:"",
+                },
+                temp: {
+                    row: null
+                },
+                pageInfo: {//分页 信息
+                    pageTotal: 0, //总条数
+                    pageNum: 0, //第几页
+                    pageSize: 10, //每页条数
+                },
+                tableData: [],//表格数据
+            }
+        },
+        created(){
+            this.tableHeight = window.innerHeight-180;
+        },
+        mounted: function() {
+            let _this = this
+            _this.onSearch();
+            window.onresize= () => {
+                if (_this.resizeFlag) {
+                    clearTimeout(_this.resizeFlag)
+                }
+                _this.resizeFlag = setTimeout(() => {
+                    _this.resizeFlag = null
+                }, 100)
+            }
+        },
+        methods: {
+            onShow: function (refresh) {
+                this.show = true;
+                if (refresh) {
+                    this.onSearch();
+                }
+            },
+            //新增
+            add: function () {
+                //隐藏list 显示添加页
+                this.show = false;
+                addvue.onShow();
+            },
+            //编辑
+            editItem: function (row) {
+                //隐藏list 显示修改页
+                this.show = false;
+                editvue.onShow(row);
+            },
+            //删除
+            deleteItem: function (row) {
+                this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    listvue.loading = true;
+                    axios.delete(globalvue.baseUrl + row.id, {}).then(function (response) {
+                        if (response.data.code !== 0) {
+                            listvue.$message(response.data.msg);
+                        }
+                        listvue.search();
+                    }).catch(function (error) {
+                        listvue.$message.error('删除异常');
+                        listvue.loading = false;
+                    });
+                });
+            },
+            //查询按钮
+            onSearch: function () {
+                this.pageInfo.pageNum = 1;
+                this.search();
+            },
+            sizeChange(pageSize){
+                this.pageInfo.pageSize = pageSize;
+                this.search();
+            },
+            //查询
+            search: function () {
+                this.loading = true;
+                var params = {};
+                for (let key in this.formSearch){
+                    if (!this.formSearch[key]) {
+                        continue;
+                    }
+                    params[key] = this.formSearch[key];
+                }
+                params.pageNum = this.pageInfo.pageNum;
+                params.pageSize = this.pageInfo.pageSize;
+                axios.get(globalvue.baseUrl,{
+                    params:params,
+                }).then(function (response) {
+                    if (response.data.code !== 0) {
+                        listvue.$message(response.data.msg);
+                    } else {
+                        listvue.tableData = response.data.data.list;
+                        listvue.pageInfo.pageTotal = response.data.data.total;
+                    }
+                    listvue.loading = false;
+                }).catch(function (error) {
+                    listvue.loading = false;
+                    listvue.$message('加载异常');
+                });
+            }
+        }
+    })
+</script>

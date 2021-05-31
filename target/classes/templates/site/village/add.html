@@ -1,0 +1,126 @@
+<div id="add" v-show="show" class="main" v-cloak>
+    <div class="main-card" v-loading="loading">
+        <el-card class="box-card">
+            <el-page-header @back="onClose(false)" content="新增">
+            </el-page-header>
+            <el-divider></el-divider>
+            <div>
+                <el-form class="add-form" ref="addform" :rules="rules" :model="form" label-width="150px" size="small">
+                    <el-form-item label="小区名称" prop="name">
+                        <el-input v-model="form.name" placeholder="请输入小区名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="小区地址" prop="address">
+                        <el-input v-model="form.address" placeholder="请输入小区地址"></el-input>
+                    </el-form-item>
+                    <el-form-item label="风险地区经纬度">
+                        <el-input v-model="longlat" @click.native="point" :disabled="true" placeholder="请选择经纬度" suffix-icon="el-icon-map-location"></el-input>
+                    </el-form-item>
+                    <el-form-item label="物业名称" prop="propertyName">
+                        <el-input v-model="form.propertyName" placeholder="请输入物业名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="社区id" prop="communityId">
+                        <el-input v-model="form.communityId" placeholder="请输入社区id"></el-input>
+                    </el-form-item>
+                    <el-form-item style="width: 100%" label="小区所在行政区域" prop="province">
+                        <eap-area url="/sys-area/tree/100000" v-model="area" v-on:on-change="onChange" show-type="none"></eap-area>
+                    </el-form-item>
+                    <el-form-item label="小区描述" prop="villageDescribe">
+                        <el-input type="textarea":row="5" v-model="form.villageDescribe" placeholder="请输入小区描述"></el-input>
+                    </el-form-item>
+                    <div class="add-button">
+                        <el-button size="small" type="primary" @click="onSubmit">保存</el-button>
+                        <el-button size="small" @click="onClose(false)">取消</el-button>
+                    </div>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
+</div>
+<script>
+    var addvue = new Vue({
+        el: '#add',
+        data: function () {
+            return {
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                form: globalvue.form,
+                rules: globalvue.rules,
+                area:[]
+            }
+        },
+        computed:{
+            longlat:function(){
+                return addvue.form.longitude+","+addvue.form.latitude
+            }
+        },
+        mounted: function() {
+        },
+        methods: {
+            //显示
+            onShow: function (parentName,parentId) {
+                this.form.parentId = parentId;
+                this.parentName=parentName;
+                this.show = true;
+                this.loading = false;
+            },
+            onChange: function (value) {
+                console.log(value)
+            },
+            //提交表单
+            onSubmit: function () {
+                addvue.form.province = addvue.area[0];
+                addvue.form.market = addvue.area[1];
+                addvue.form.county = addvue.area[2];
+                this.$refs['addform'].validate(function (valid){
+                    if (valid) {
+                        addvue.loading = true;
+                        axios.post(globalvue.baseUrl, addvue.form).then(function (response) {
+                            if (response.data.code !== 0) {
+                                addvue.$message(response.data.msg);
+                            } else {
+                                addvue.$refs['addform'].resetFields();
+                                addvue.$message.success('新增成功');
+                                addvue.onClose(true);
+                            }
+                            addvue.loading = false;
+                        }).catch(function (error) {
+                            addvue.$message.error('新增异常');
+                            addvue.loading = false;
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            point: function(){
+                $.layerParentOpen(parent.layer,{
+                    title:"地图点选",
+                    url:"${request.contextPath}/v/ui/lib/mapChoose",
+                    width:"80%",
+                    height:"90%",
+                    onClickSure:function (index,layero) {
+                        var iframeWin = parent.window[layero.find('iframe')[0]['name']];
+                        var lnglat = iframeWin.getLnglat();
+                        addvue.form.longitude = lnglat.lng;
+                        addvue.form.latitude = lnglat.lat;
+                        parent.layer.close(index);
+                    },
+                    success:function (layero,index) {
+                        var iframeWin = parent.window[layero.find('iframe')[0]['name']];
+                        var lnglat = new Object();
+                        lnglat.lat = addvue.form.longitude;
+                        lnglat.lng = addvue.form.latitude;
+                        iframeWin.setLnglat(lnglat);
+                    }
+                })
+            },
+            //关闭 是否刷新list
+            onClose: function (refreshList) {
+                this.show = false;
+                this.loading = false;
+                listvue.onShow(refreshList);
+            }
+        }
+    })
+</script>

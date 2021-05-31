@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>排放量均值排名</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script src="${request.contextPath}/static/echarts-5.0.2/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/js/echarts_theme/vehicle_theme.js" type="text/javascript" charset="utf-8"></script>
+<div id="analysis" v-show="show" class="main" v-cloak>
+    <el-card class="box-card">
+        <el-card shadow="always" class="small-card">
+            <el-row :gutter="2">
+                <el-col :span="12">
+                    <div ref="myEchart" style="height: 350px;width:100%"></div>
+                </el-col>
+            </el-row>
+        </el-card>
+    </el-card>
+</div>
+<script type="text/javascript">
+    var echartsvue = new Vue({
+        el: '#analysis',
+        data: function () {
+            return {
+                loading: false,
+                show: true,
+                barData:[],
+                option : {
+                    title:{
+                        text:''
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        nameLocation:'end',
+                        name:'风险等级',
+                        axisLabel:{
+                            interval:0//横轴信息全部显示
+                        },
+                        boundaryGap:['20%','60%'],
+                        data: ['高风险', '中风险', '低风险']
+                    },
+                    yAxis: {
+                        name:'数量',
+                        type: 'value'
+                    },
+                    series: [{
+                        data: [],
+                        type: 'bar',
+                        showBackground: true,
+                        backgroundStyle: {
+                            color: 'rgba(180, 180, 180, 0.2)'
+                        }
+                    }]
+                },
+            }
+        },
+        mounted: function () {
+            this.onSearch();
+        },
+        methods: {
+            //查询
+            onSearch: function () {
+                this.loading = true;
+                var params = {};
+                var myChart = echarts.init(this.$refs.myEchart,"vehicle_theme");
+                this.option.title.text = '风险地区数量统计柱状图';
+                axios.get(baseServerUrl + "/site-risk-area/grade").then(function (response) {
+                    echartsvue.option.series[0].data[0] = response.data.data.grade01;
+                    echartsvue.option.series[0].data[1] = response.data.data.grade02;
+                    echartsvue.option.series[0].data[2] = response.data.data.grade03;
+                    myChart.setOption(echartsvue.option);
+                    echartsvue.loading = false;
+                }).catch(function (error) {
+                    echartsvue.loading = false;
+                    echartsvue.$message('加载异常');
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

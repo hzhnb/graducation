@@ -1,0 +1,107 @@
+<div id="edit" v-show="show" class="main" v-cloak>
+    <div class="main-card" v-loading="loading">
+        <el-card class="box-card">
+            <el-page-header @back="onClose(false)" content="编辑">
+            </el-page-header>
+            <el-divider></el-divider>
+            <div>
+                <el-form class="add-form" ref="editform" :rules="rules" :model="form" label-width="150px" size="small">
+                    <el-form-item label="社区名称" prop="name">
+                        <el-input v-model="form.name" placeholder="请输入社区名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="社区地址" prop="address">
+                        <el-input v-model="form.address" placeholder="请输入社区地址"></el-input>
+                    </el-form-item>
+                    <el-form-item label="社区所在省份" prop="province">
+                        <el-input v-model="form.province" placeholder="请输入社区所在省份"></el-input>
+                    </el-form-item>
+                    <el-form-item label="社区所在市" prop="market">
+                        <el-input v-model="form.market" placeholder="请输入社区所在市"></el-input>
+                    </el-form-item>
+                    <el-form-item label="社区所在县" prop="county">
+                        <el-input v-model="form.county" placeholder="请输入社区所在县"></el-input>
+                    </el-form-item>
+                    <el-form-item label="社区经度" prop="longitude">
+                        <el-input v-model="form.longitude" placeholder="请输入社区经度"></el-input>
+                    </el-form-item>
+                    <el-form-item label="社区纬度" prop="latitude">
+                        <el-input v-model="form.latitude" placeholder="请输入社区纬度"></el-input>
+                    </el-form-item>
+                    <div class="add-button">
+                        <el-button size="small" type="primary" @click="onSubmit">保存</el-button>
+                        <el-button size="small" @click="onClose(false)">取消</el-button>
+                    </div>
+                </el-form>
+            </div>
+        </el-card>
+    </div>
+</div>
+<script>
+    var editvue = new Vue({
+        el: '#edit',
+        data: function () {
+            return {
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                form: globalvue.form,
+                rules: globalvue.rules,
+
+            }
+        },
+        mounted: function() {
+        },
+        methods: {
+            //显示
+            onShow: function (data) {
+                if (!data.id) {
+                    this.$message.info("未找到标识")
+                    this.onClose();
+                    return;
+                }
+                this.show = true;
+                this.loading = true;
+                axios.get(globalvue.baseUrl + data.id)
+                        .then(function (response) {
+                            if (response.data.code !== 0) {
+                                editvue.$message(response.data.msg);
+                            } else {
+                                editvue.form = response.data.data;
+                                editvue.loading = false;
+                            }
+                        })
+                        .catch(function (error) {
+                            editvue.$message('加载异常');
+                        });
+            },
+            //提交表单
+            onSubmit: function () {
+                this.$refs['editform'].validate(function (valid) {
+                    if (valid) {
+                        editvue.loading = true;
+                        axios.put(globalvue.baseUrl, editvue.form).then(function (response) {
+                            if (response.data.code !== 0) {
+                                editvue.$message(response.data.msg);
+                            } else {
+                                editvue.$refs['editform'].resetFields();
+                                editvue.$message.success('修改成功');
+                                editvue.onClose(true);
+                            }
+                            editvue.loading = false;
+                        }).catch(function (error) {
+                            editvue.$message.error('修改异常');
+                            editvue.loading = false;
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            //关闭
+            onClose: function (refreshList) {
+                this.show = false;
+                this.loading = false;
+                listvue.onShow(refreshList);
+            }
+        }
+    })
+</script>

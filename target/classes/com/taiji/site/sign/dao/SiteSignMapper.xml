@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.taiji.site.sign.dao.SiteSignMapper">
+    <resultMap id="BaseResultMap" type="com.taiji.site.sign.bean.SiteSignDO">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="temperature" property="temperature" jdbcType="VARCHAR" />
+        <result column="is_get" property="isGet" jdbcType="VARCHAR" />
+        <result column="state" property="state" jdbcType="VARCHAR" />
+        <result column="is_contact" property="isContact" jdbcType="VARCHAR" />
+        <result column="time" property="time" jdbcType="TIMESTAMP" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="deleted" property="deleted" jdbcType="VARCHAR" />
+        <result column="version" property="version" jdbcType="INTEGER" />
+        <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BASE_COLUMN_LIST">
+        id,temperature,is_get,state,is_contact,time,create_time,create_by,update_time,update_by,deleted,version,org_id
+    </sql>
+
+    <sql id="condition">
+        <where>
+            1=1
+            <if test="id!=null and id!=''">
+                AND id = #{id,jdbcType=VARCHAR}
+            </if>
+            <if test="temperature!=null and temperature!=''">
+                AND temperature = #{temperature,jdbcType=VARCHAR}
+            </if>
+            <if test="isGet!=null and isGet!=''">
+                AND is_get = #{isGet,jdbcType=VARCHAR}
+            </if>
+            <if test="state!=null and state!=''">
+                AND state = #{state,jdbcType=VARCHAR}
+            </if>
+            <if test="isContact!=null and isContact!=''">
+                AND is_contact = #{isContact,jdbcType=VARCHAR}
+            </if>
+            <if test="time!=null and time!=''">
+                AND time = #{time,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createTime!=null and createTime!=''">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy!=null and createBy!=''">
+                AND create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy!=null and updateBy!=''">
+                AND update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="deleted!=null and deleted!=''">
+                AND deleted = #{deleted,jdbcType=VARCHAR}
+            </if>
+            <if test="version!=null and version!=''">
+                AND version = #{version,jdbcType=INTEGER}
+            </if>
+            <if test="orgId!=null and orgId!=''">
+                AND org_id = #{orgId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO t_site_sign(
+        id,temperature,is_get,state,is_contact,time,create_time,create_by,update_time,update_by,deleted,version,org_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.id,jdbcType=VARCHAR},#{item.temperature,jdbcType=VARCHAR},#{item.isGet,jdbcType=VARCHAR},#{item.state,jdbcType=VARCHAR},#{item.isContact,jdbcType=VARCHAR},#{item.time,jdbcType=TIMESTAMP},#{item.createTime,jdbcType=TIMESTAMP},#{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.deleted,jdbcType=VARCHAR},#{item.version,jdbcType=INTEGER},#{item.orgId,jdbcType=VARCHAR}
+        )
+        </foreach>
+    </insert>
+
+</mapper>

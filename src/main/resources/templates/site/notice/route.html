@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>siteNotice</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script>
+    var globalvue = new Vue({
+        data: function () {
+            return {
+                baseUrl: baseServerUrl + "/site-notice/",
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                //表单数据
+                form: {
+                    type:"",
+                    content:"",
+                    time:"",
+                    title:"",
+                    fileId:"",
+                },
+                //表单校验规则 https://element.eleme.cn/2.15/#/zh-CN/component/form
+                rules: {
+                    type: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    content: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    time: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    title: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    fileId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                }
+            }
+        },
+    })
+</script>
+<#include "add.html">
+<#include "edit.html">
+<#include "list.html">
+</body>
+</html>

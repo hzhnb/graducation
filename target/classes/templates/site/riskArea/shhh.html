@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>排放量均值排名</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script src="${request.contextPath}/static/echarts-5.0.2/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="${request.contextPath}/static/js/echarts_theme/vehicle_theme.js" type="text/javascript" charset="utf-8"></script>
+aaaaaaaaaaaaaaaa
+<div id="analysis" v-show="show" class="main" v-cloak>
+    <el-card class="box-card">
+        <el-card shadow="always" class="small-card">
+            <el-row :gutter="2">
+                <el-col :span="12">
+                    <div ref="myEchart" style="height: 350px;width:100%"></div>
+                </el-col>
+            </el-row>
+        </el-card>
+    </el-card>
+</div>
+<script type="text/javascript">
+    var echartsvue = new Vue({
+        el: '#analysis',
+        data: function () {
+            return {
+                loading: false,
+                show: true,
+                barData:[],
+                option : {
+                    title:{
+                        text:''
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: ['高风险', '中风险', '低风险']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        data: [],
+                        type: 'bar',
+                        showBackground: true,
+                        backgroundStyle: {
+                            color: 'rgba(180, 180, 180, 0.2)'
+                        }
+                    }]
+                },
+            }
+        },
+        created(){
+            this.tableHeight = window.innerHeight-180;
+        },
+        mounted: function () {
+            this.onSearch();
+        },
+        methods: {
+            //查询
+
+            onSearch: function () {
+                this.loading = true;
+                var params = {};
+                axios.get(baseServerUrl + "/site-risk-area/grade").then(function (response) {
+                    var myChart1 = echarts.init(this.$refs.myEchart,"vehicle_theme");
+                    this.option.title.text = '风险地区数量统计柱状图';
+                    myChart1.setOption(this.option);
+                    echartsvue.barData = response.data;
+                    this.option.series.data[0] = echartsvue.barData;
+                    myChart1.setOption(this.option);
+                    echartsvue.loading = false;
+                }).catch(function (error) {
+                    echartsvue.loading = false;
+                    echartsvue.$message('加载异常');
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

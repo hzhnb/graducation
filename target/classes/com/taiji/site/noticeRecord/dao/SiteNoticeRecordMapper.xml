@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.taiji.site.noticeRecord.dao.SiteNoticeRecordMapper">
+    <resultMap id="BaseResultMap" type="com.taiji.site.noticeRecord.bean.SiteNoticeRecordDO">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="is_read" property="isRead" jdbcType="VARCHAR" />
+        <result column="notice_id" property="noticeId" jdbcType="VARCHAR" />
+        <result column="administrator_id" property="administratorId" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="deleted" property="deleted" jdbcType="VARCHAR" />
+        <result column="version" property="version" jdbcType="INTEGER" />
+        <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BASE_COLUMN_LIST">
+        id,is_read,notice_id,administrator_id,create_time,create_by,update_time,update_by,deleted,version,org_id
+    </sql>
+
+    <sql id="condition">
+        <where>
+            1=1
+            <if test="id!=null and id!=''">
+                AND id = #{id,jdbcType=VARCHAR}
+            </if>
+            <if test="isRead!=null and isRead!=''">
+                AND is_read = #{isRead,jdbcType=VARCHAR}
+            </if>
+            <if test="noticeId!=null and noticeId!=''">
+                AND notice_id = #{noticeId,jdbcType=VARCHAR}
+            </if>
+            <if test="administratorId!=null and administratorId!=''">
+                AND administrator_id = #{administratorId,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime!=null and createTime!=''">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy!=null and createBy!=''">
+                AND create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy!=null and updateBy!=''">
+                AND update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="deleted!=null and deleted!=''">
+                AND deleted = #{deleted,jdbcType=VARCHAR}
+            </if>
+            <if test="version!=null and version!=''">
+                AND version = #{version,jdbcType=INTEGER}
+            </if>
+            <if test="orgId!=null and orgId!=''">
+                AND org_id = #{orgId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO t_site_notice_record(
+        id,is_read,notice_id,administrator_id,create_time,create_by,update_time,update_by,deleted,version,org_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.id,jdbcType=VARCHAR},#{item.isRead,jdbcType=VARCHAR},#{item.noticeId,jdbcType=VARCHAR},#{item.administratorId,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.deleted,jdbcType=VARCHAR},#{item.version,jdbcType=INTEGER},#{item.orgId,jdbcType=VARCHAR}
+        )
+        </foreach>
+    </insert>
+
+</mapper>

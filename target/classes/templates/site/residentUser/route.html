@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>siteResident</title>
+    <#include "/site/base/base.html">
+</head>
+<body>
+<script>
+    var globalvue = new Vue({
+        data: function () {
+            var checkEmail = (rule, value, callback) => {
+                const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+                if (!value) {
+                    return callback(new Error('邮箱不能为空'))
+                }
+                setTimeout(() => {
+                    if (mailReg.test(value)) {
+                    callback()
+                }else {
+                    callback(new Error('请输入正确的邮箱格式'))
+                }
+            },100)
+            }
+            var checkPhone = (rule, value, callback) => {
+                const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
+                if (!value) {
+                    return callback(new Error('电话号码不能为空'))
+                }
+                setTimeout(() => {
+                    if (!Number.isInteger(+value)) {
+                    callback(new Error('请输入数字值'))
+                } else {
+                    if (phoneReg.test(value)) {
+                        callback()
+                    } else {
+                        callback(new Error('电话号码格式不正确'))
+                    }
+                }
+            }, 100)
+            }
+            return {
+                baseUrl: baseServerUrl + "/site-resident/",
+                loading: false, //是否显示加载
+                show: false, //是够显示页面
+                parentName:null,
+                //表单数据
+                form: {
+                    email:"",
+                    address:"",
+                    gender:"",
+                    idcare:"",
+                    phone:"",
+                    birth:"",
+                    userId:"",
+                    communityId:"",
+                    villageId:"",
+                    buildingId:"",
+                    roomNumber:"",
+                },
+                //表单校验规则 https://element.eleme.cn/2.15/#/zh-CN/component/form
+                rules: {
+                    email: [{
+                        validator: checkEmail,
+                        trigger: 'blur'
+                    }],
+                    address: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    gender: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    idcare: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    phone: [{
+                        validator: checkPhone,
+                        trigger: 'blur'
+                    }],
+                    birth: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    userId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    communityId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    villageId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    buildingId: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                    roomNumber: [{
+                        required: true,
+                        message: '必填',
+                        trigger: 'blur'
+                    }],
+                }
+            }
+        },
+    })
+</script>
+<#include "add.html">
+<#include "edit.html">
+<#include "list.html">
+</body>
+</html>

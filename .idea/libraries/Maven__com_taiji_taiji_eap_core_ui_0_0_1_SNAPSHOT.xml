@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.taiji:taiji-eap-core-ui:0.0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taiji/taiji-eap-core-ui/0.0.1-SNAPSHOT/taiji-eap-core-ui-0.0.1-20210526.013728-54.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taiji/taiji-eap-core-ui/0.0.1-SNAPSHOT/taiji-eap-core-ui-0.0.1-20210526.013728-54-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taiji/taiji-eap-core-ui/0.0.1-SNAPSHOT/taiji-eap-core-ui-0.0.1-20210526.013728-54-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

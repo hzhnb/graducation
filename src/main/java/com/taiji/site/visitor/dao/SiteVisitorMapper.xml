@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.taiji.site.visitor.dao.SiteVisitorMapper">
+    <resultMap id="BaseResultMap" type="com.taiji.site.visitor.bean.SiteVisitorDO">
+        <id column="id" property="id" jdbcType="VARCHAR"></id>
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="idcare" property="idcare" jdbcType="VARCHAR" />
+        <result column="vfrom" property="vfrom" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="time" property="time" jdbcType="TIMESTAMP" />
+        <result column="resident_id" property="residentId" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="deleted" property="deleted" jdbcType="VARCHAR" />
+        <result column="version" property="version" jdbcType="INTEGER" />
+        <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BASE_COLUMN_LIST">
+        id,name,idcare,vfrom,address,phone,time,resident_id,create_time,create_by,update_time,update_by,deleted,version,org_id
+    </sql>
+
+    <sql id="condition">
+        <where>
+            1=1
+            <if test="id!=null and id!=''">
+                AND id = #{id,jdbcType=VARCHAR}
+            </if>
+            <if test="name!=null and name!=''">
+                AND name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="idcare!=null and idcare!=''">
+                AND idcare = #{idcare,jdbcType=VARCHAR}
+            </if>
+            <if test="vfrom!=null and vfrom!=''">
+                AND vfrom = #{vfrom,jdbcType=VARCHAR}
+            </if>
+            <if test="address!=null and address!=''">
+                AND address = #{address,jdbcType=VARCHAR}
+            </if>
+            <if test="phone!=null and phone!=''">
+                AND phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="time!=null and time!=''">
+                AND time = #{time,jdbcType=TIMESTAMP}
+            </if>
+            <if test="residentId!=null and residentId!=''">
+                AND resident_id = #{residentId,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime!=null and createTime!=''">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createBy!=null and createBy!=''">
+                AND create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy!=null and updateBy!=''">
+                AND update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="deleted!=null and deleted!=''">
+                AND deleted = #{deleted,jdbcType=VARCHAR}
+            </if>
+            <if test="version!=null and version!=''">
+                AND version = #{version,jdbcType=INTEGER}
+            </if>
+            <if test="orgId!=null and orgId!=''">
+                AND org_id = #{orgId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO t_site_visitor(
+        id,name,idcare,vfrom,address,phone,time,resident_id,create_time,create_by,update_time,update_by,deleted,version,org_id)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.id,jdbcType=VARCHAR},#{item.name,jdbcType=VARCHAR},#{item.idcare,jdbcType=VARCHAR},#{item.vfrom,jdbcType=VARCHAR},#{item.address,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.time,jdbcType=TIMESTAMP},#{item.residentId,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.deleted,jdbcType=VARCHAR},#{item.version,jdbcType=INTEGER},#{item.orgId,jdbcType=VARCHAR}
+        )
+        </foreach>
+    </insert>
+
+</mapper>
